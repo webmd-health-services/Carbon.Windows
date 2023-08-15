@@ -18,7 +18,7 @@
     RootModule = 'Carbon.Windows.psm1'
 
     # Version number of this module.
-    ModuleVersion = '0.0.0'
+    ModuleVersion = '1.0.0'
 
     # ID used to uniquely identify this module
     GUID = '213665a5-b050-4a82-8027-088f146026c2'
@@ -36,7 +36,7 @@
     Copyright = '(c) WebMD Health Services.'
 
     # Description of the functionality provided by this module
-    Description = ''
+    Description = 'Functions for managing and configuring Windows.'
 
     # Minimum version of the Windows PowerShell engine required by this module
     PowerShellVersion = '5.1'
@@ -76,6 +76,9 @@
 
     # Functions to export from this module. Only list public function here.
     FunctionsToExport = @(
+        'Get-CBackConnectionHostName',
+        'Register-CBackConnectionHostName',
+        'Unregister-CBackConnectionHostName'
     )
 
     # Cmdlets to export from this module. By default, you get a script module, so there are no cmdlets.
@@ -102,7 +105,17 @@
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags = @( 'Desktop', 'Core' )
+            Tags = @(
+                'Desktop',
+                'Core',
+                'back',
+                'connection',
+                'hostname',
+                'backconnection',
+                'backconnectionhostname',
+                'lsa',
+                'loopback'
+            )
 
             # A URL to the license for this module.
             LicenseUri = 'http://www.apache.org/licenses/LICENSE-2.0'

@@ -1,0 +1,9 @@
+{
+  "PSModules": [
+    {
+      "name": "Carbon.Registry",
+      "version": "1.0.0-rc3",
+      "repositorySourceLocation": "https://www.powershellgallery.com/api/v2"
+    }
+  ]
+}

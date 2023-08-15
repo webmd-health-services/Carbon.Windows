@@ -1,0 +1,9 @@
+{
+    "PSModules": [
+        {
+            "Name": "Carbon.Registry",
+            "Version": "1.*-*"
+        }
+    ],
+    "PSModulesDirectoryName": "Modules"
+}
