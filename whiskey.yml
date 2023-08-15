@@ -1,0 +1,84 @@
+
+Build:
+- PowerShell:
+    ExceptDuring: Clean
+    ScriptBlock: prism install | Format-Table -Auto
+
+- Version:
+    Path: Carbon.Windows\Carbon.Windows.psd1
+    Prerelease:
+    - main: ""
+    - "*": rc1
+
+# Update the AppVeyor build/version number.
+- Exec:
+      OnlyBy: BuildServer
+      Path: appveyor
+      Argument: [ UpdateBuild, -Version, "$(WHISKEY_SEMVER2)+$(WHISKEY_BUILD_NUMBER)" ]
+
+# Dot-sourcing files is expensive. Move all functions into .psm1 file to improve import speed. Do this before testing
+# to ensure the module still works.
+- MergeFile:
+    OnlyBy: BuildServer
+    # Builds run twice on some serves. Only run this step if the module hasn't been merged yet.
+    IfExists: Carbon.Windows\Functions\*.ps1
+    Path:
+    - Carbon.Windows\Functions\*.ps1
+    DestinationPath: Carbon.Windows\Carbon.Windows.psm1
+    DeleteSourceFiles: true
+    TextSeparator: "$(NewLine)$(NewLine)"
+
+- PowerShell:
+    ExceptDuring: Clean
+    Path: init.ps1
+
+- PowerShell:
+    OnlyDuring: Clean
+    Path: reset.ps1
+
+- CopyFile:
+    Path:
+    - CHANGELOG.md
+    - README.md
+    - LICENSE.txt
+    - NOTICE.txt
+    DestinationDirectory: Carbon.Windows
+
+- Zip:
+    ArchivePath: .output\Carbon.Windows-$(WHISKEY_SEMVER2).zip
+    Path:
+    - Carbon.Windows
+    Exclude:
+    - "*.pdb"
+    - "*.orig"
+
+- Exec:
+    OnlyBy: BuildServer
+    Path: appveyor
+    Argument: [ 'PushArtifact', '.output/Carbon.Windows-$(WHISKEY_SEMVER2).zip', '-DeploymentName', 'GitHub' ]
+
+- Pester:
+    Configuration:
+        Run:
+            Path: Tests\*.Tests.ps1
+            Exit: true
+            Throw: true
+        TestResult:
+            Enabled: true
+            OutputPath: .output\pester.xml
+            TestSuiteName: Carbon.Windows
+        Output:
+            Verbosity: Detailed
+
+- PublishPowerShellModule:
+    Path: Carbon.Windows
+
+- Exec:
+    OnlyBy: BuildServer
+    Path: appveyor
+    Argument: [
+        'PushArtifact',
+        '.output/Carbon.Windows.$(WHISKEY_SEMVER2_NO_BUILD_METADATA).nupkg',
+        '-DeploymentName',
+        'PowerShellGallery'
+    ]

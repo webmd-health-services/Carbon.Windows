@@ -1,0 +1,8 @@
+TOPIC
+    about_Carbon.Windows
+
+SHORT DESCRIPTION
+    Carbon.Windows is a PowerShell module for...
+
+LONG DESCRIPTION
+    The Carbon.Windows PowerShell module...
