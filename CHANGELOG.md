@@ -3,7 +3,7 @@
 
 ## 1.0.0
 
-> Released 15 Aug 2023
+> Released 16 Aug 2023
 
 Added functions:
 
