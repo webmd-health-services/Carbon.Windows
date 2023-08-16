@@ -1,13 +1,16 @@
-# Overview
 
-The "Carbon.Windows" module...
+# Carbon.Windows
 
-# System Requirements
+## Overview
+
+The "Carbon.Windows" PowerShell module is used to manage Windows.
+
+## System Requirements
 
 * Windows PowerShell 5.1 and .NET 4.6.1+
 * PowerShell Core 6+
 
-# Installing
+## Installing
 
 To install globally:
 
@@ -23,4 +26,8 @@ Save-Module -Name 'Carbon.Windows' -Path '.'
 Import-Module -Name '.\Carbon.Windows'
 ```
 
-# Commands
+## Commands
+
+* `Get-CBackConnectionHostName`, for getting the list of currently configured back connection hostnames.
+* `Register-CBackConnectionHostName`, for adding a back connection hostname, if it isn't already configured.
+* `Unregister-CBackConnectionHostName`, for removing a back connection hostname, if it exists.

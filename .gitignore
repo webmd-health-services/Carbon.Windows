@@ -1,7 +1,8 @@
-/.output
-/PSModules
-/.vscode
+/.output/
+/PSModules/
+/.vscode/
 /Carbon.Windows/CHANGELOG.md
 /Carbon.Windows/LICENSE.txt
 /Carbon.Windows/NOTICE.txt
 /Carbon.Windows/README.md
+/Carbon.Windows/Modules/

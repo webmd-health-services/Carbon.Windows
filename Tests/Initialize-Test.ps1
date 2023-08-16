@@ -13,7 +13,7 @@ Execute this script as the first thing in each of your test fixtures:
 
     #Requires -Version 5.1
     Set-StrictMode -Version 'Latest'
-    
+
     & (Join-Path -Path $PSScriptRoot -ChildPath 'Initialize-Test.ps1' -Resolve)
 #>
 [CmdletBinding()]
@@ -31,6 +31,7 @@ try
     $modules = [ordered]@{
         'Carbon.Windows' = '..\Carbon.Windows';
         'Carbon.WindowsTestHelper' = 'Carbon.WindowsTestHelper';
+        'Carbon.Registry' = '..\Carbon.Windows\Modules\Carbon.Registry';
     }
     foreach( $moduleName in $modules.Keys )
     {

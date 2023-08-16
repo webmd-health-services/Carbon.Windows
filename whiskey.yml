@@ -1,6 +1,7 @@
 
 Build:
 - PowerShell:
+    WorkingDirectory: Carbon.Windows
     ExceptDuring: Clean
     ScriptBlock: prism install | Format-Table -Auto
 
