@@ -77,6 +77,8 @@
     # Functions to export from this module. Only list public function here.
     FunctionsToExport = @(
         'Get-CBackConnectionHostName',
+        'Get-CEventLog',
+        'New-CEventLog',
         'Register-CBackConnectionHostName',
         'Unregister-CBackConnectionHostName'
     )
@@ -126,7 +128,7 @@
             # A URL to an icon representing this module.
             # IconUri = ''
 
-            Prerelease = ''
+            Prerelease = 'rc1'
 
             # ReleaseNotes of this module
             ReleaseNotes = 'https://github.com/webmd-health-services/Carbon.Windows/blob/main/CHANGELOG.md'
