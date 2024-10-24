@@ -44,7 +44,7 @@ function Get-CEventLog
 
         # The entry type to filter for.
         [Parameter(ParameterSetName='logs')]
-        [String] $EntryType,
+        [System.Diagnostics.EventLogEntryType] $EntryType,
 
         # The message to filter for.
         [Parameter(ParameterSetName='logs')]
@@ -70,11 +70,6 @@ function Get-CEventLog
         if ($Message)
         {
             $entries = $entries | Where-Object Message -Like $Message
-        }
-
-        if ($Source)
-        {
-            $entries = $entries | Where-Object Source -like $Source
         }
 
         if ($Newest)
