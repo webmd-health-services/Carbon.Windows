@@ -34,7 +34,7 @@ function New-CEventLog
         {
             if ($PSCmdlet.ShouldProcess("$s event log source '$LogName'", "install"))
             {
-                [System.Diagnostics.EventLog]::CreateEventSource($LogName, $s)
+                [System.Diagnostics.EventLog]::CreateEventSource($s, $LogName)
             }
         }
     }
