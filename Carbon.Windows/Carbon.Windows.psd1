@@ -18,7 +18,7 @@
     RootModule = 'Carbon.Windows.psm1'
 
     # Version number of this module.
-    ModuleVersion = '1.0.0'
+    ModuleVersion = '1.1.0'
 
     # ID used to uniquely identify this module
     GUID = '213665a5-b050-4a82-8027-088f146026c2'
