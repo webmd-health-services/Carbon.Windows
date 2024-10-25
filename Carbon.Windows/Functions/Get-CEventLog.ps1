@@ -58,6 +58,9 @@ function Get-CEventLog
         [String] $Message
     )
 
+    Set-StrictMode -Version 'Latest'
+    Use-CallerPreference -Cmdlet $PSCmdlet -Session $ExecutionContext.SessionState
+
     if ($List)
     {
         return [System.Diagnostics.EventLog]::GetEventLogs()
@@ -68,6 +71,7 @@ function Get-CEventLog
         $log = [System.Diagnostics.EventLog]::New($LogName)
 
         $entries = $log.Entries
+        Write-Debug $entries.Count
 
         if ($EntryType)
         {
@@ -76,14 +80,17 @@ function Get-CEventLog
 
         if ($Message)
         {
-            $entries = $entries | Where-Object Message -Like $Message
+            $entries = $entries | Where-Object Message -Match $Message
         }
 
         if ($Newest)
         {
             $entries = $entries | Select-Object -Last $Newest
         }
-
+        foreach ($entry in $entries)
+        {
+            Write-Debug $entry.Message
+        }
         return $entries
     }
 }
