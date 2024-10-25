@@ -8,7 +8,7 @@ The "Carbon.Windows" PowerShell module is used to manage Windows.
 ## System Requirements
 
 * Windows PowerShell 5.1 and .NET 4.6.1+
-* PowerShell Core 6+
+* PowerShell Core 7+
 
 ## Installing
 

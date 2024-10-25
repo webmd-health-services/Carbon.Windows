@@ -71,7 +71,6 @@ function Get-CEventLog
         $log = [System.Diagnostics.EventLog]::New($LogName)
 
         $entries = $log.Entries
-        Write-Debug $entries.Count
 
         if ($EntryType)
         {
@@ -80,17 +79,14 @@ function Get-CEventLog
 
         if ($Message)
         {
-            $entries = $entries | Where-Object Message -Match $Message
+            $entries = $entries | Where-Object Message -Like $Message
         }
 
         if ($Newest)
         {
             $entries = $entries | Select-Object -Last $Newest
         }
-        foreach ($entry in $entries)
-        {
-            Write-Debug $entry.Message
-        }
+
         return $entries
     }
 }
