@@ -51,6 +51,7 @@ BeforeAll {
 Describe 'Get-CEventLog' {
     BeforeEach {
         $script:result = $null
+        Start-Sleep -Seconds 1
     }
 
     It 'should list event logs' {
