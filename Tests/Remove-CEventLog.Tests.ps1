@@ -19,7 +19,7 @@ BeforeAll {
 
     function WhenRemovingEventLog
     {
-        Remove-CEventLog -LogName $script:logName
+        Remove-CEventLog -LogName $script:logName -ErrorAction 'SilentlyContinue'
     }
 
     function ThenError
@@ -45,6 +45,7 @@ Describe 'Remove-CEventLog' {
     }
 
     It 'should error when event log does not exist' {
+        WhenRemovingEventLog
         WhenRemovingEventLog
         ThenError
     }

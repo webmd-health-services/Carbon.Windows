@@ -10,10 +10,7 @@ BeforeAll {
 
     $script:logName = 'New-CEventLog.Test'
 
-    function CleanUpEventLog
-    {
-        [System.Diagnostics.EventLog]::Delete($script:logName)
-    }
+    Uninstall-CEventLog -LogName $script:logName
 
     function GivenEventSource
     {
@@ -29,12 +26,12 @@ BeforeAll {
 
     function WhenCreatingEventLog
     {
-        New-CEventLog -LogName $script:logName -Source $script:source
+        New-CEventLog -LogName $script:logName -Source $script:source -ErrorAction 'SilentlyContinue'
     }
 
     function ThenEventLogIsCreated
     {
-        $log = [System.Diagnostics.EventLog]::New($script:logName)
+        $log = [Diagnostics.EventLog]::New($script:logName)
         $log | Should -Not -BeNullOrEmpty
     }
 
@@ -42,14 +39,20 @@ BeforeAll {
     {
         foreach ($s in $script:source)
         {
-            [System.Diagnostics.EventLog]::SourceExists($s, $script:logName) | Should -Be $true
+            [Diagnostics.EventLog]::SourceExists($s, $script:logName) | Should -Be $true
         }
+    }
+
+    function ThenError
+    {
+        $Global:Error[0].Exception.Message | Should -Match 'The source exists'
     }
 }
 
 Describe 'New-CEventLog' {
     BeforeEach {
-        $script:source = [System.Collections.ArrayList]::New()
+        $script:source = [Collections.ArrayList]::New()
+        $Global:Error.Clear()
     }
 
     It 'should create an event log with the given source' {
@@ -64,7 +67,13 @@ Describe 'New-CEventLog' {
         ThenEventLogIsCreated
     }
 
+    It 'should throw an error when creating an event log with an existing source' {
+        GivenEventSource -Source 'Carbon.Windows'
+        WhenCreatingEventLog
+        WhenCreatingEventLog
+    }
+
     AfterEach {
-        CleanUpEventLog
+        Uninstall-CEventLog -LogName $script:logName
     }
 }

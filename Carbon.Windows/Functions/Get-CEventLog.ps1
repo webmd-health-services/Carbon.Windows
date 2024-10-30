@@ -51,7 +51,7 @@ function Get-CEventLog
 
         # The entry type to filter for.
         [Parameter(ParameterSetName='logs')]
-        [System.Diagnostics.EventLogEntryType] $EntryType,
+        [Diagnostics.EventLogEntryType] $EntryType,
 
         # The message to filter for.
         [Parameter(ParameterSetName='logs')]
@@ -63,12 +63,12 @@ function Get-CEventLog
 
     if ($List)
     {
-        return [System.Diagnostics.EventLog]::GetEventLogs()
+        return [Diagnostics.EventLog]::GetEventLogs()
     }
 
     if ($LogName)
     {
-        $log = [System.Diagnostics.EventLog]::New($LogName)
+        $log = [Diagnostics.EventLog]::New($LogName)
 
         $entries = $log.Entries
 

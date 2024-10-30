@@ -19,9 +19,9 @@ BeforeAll {
     {
         param(
             [String] $Message,
-            [System.Diagnostics.EventLogEntryType] $EntryType = 'Error'
+            [Diagnostics.EventLogEntryType] $EntryType = 'Error'
         )
-        [System.Diagnostics.EventLog]::WriteEntry($script:logName, $Message, $EntryType)
+        [Diagnostics.EventLog]::WriteEntry($script:logName, $Message, $EntryType)
     }
 
     function WhenGettingEventLogs
@@ -30,7 +30,7 @@ BeforeAll {
             [switch] $List,
             [String] $LogName,
             [int] $Newest,
-            [System.Diagnostics.EventLogEntryType] $EntryType,
+            [Diagnostics.EventLogEntryType] $EntryType,
             [String] $Message
         )
 
@@ -44,7 +44,7 @@ BeforeAll {
 
     function CleanUpEventLog
     {
-        [System.Diagnostics.EventLog]::Delete($script:logName)
+        [Diagnostics.EventLog]::Delete($script:logName)
     }
 }
 
@@ -69,10 +69,12 @@ Describe 'Get-CEventLog' {
 
     It 'should match event logs by message' {
         GivenEventLog
-        foreach ($x in 1..5) {
+        foreach ($x in 1..5)
+        {
             GivenLogEntry -Message "Test message $x"
         }
-        foreach ($x in 1..5) {
+        foreach ($x in 1..5)
+        {
             GivenLogEntry -Message "This is not a test message $x"
         }
         WhenGettingEventLogs -LogName $script:logName -Message 'Test*'
@@ -85,10 +87,12 @@ Describe 'Get-CEventLog' {
 
     It 'should match event logs by entry type' {
         GivenEventLog
-        foreach ($x in 1..4) {
+        foreach ($x in 1..4)
+        {
             GivenLogEntry -Message "Test message $x" -EntryType 'Information'
         }
-        foreach ($x in 1..6) {
+        foreach ($x in 1..6)
+        {
             GivenLogEntry -Message "This is not a test message $x" -EntryType 'Error'
         }
 
@@ -100,16 +104,19 @@ Describe 'Get-CEventLog' {
 
     It 'should select the most recent 5 event logs' {
         GivenEventLog
-        foreach ($x in 1..10) {
+        foreach ($x in 1..10)
+        {
             GivenLogEntry -Message "Test message $x"
         }
 
-        foreach ($x in 1..10) {
+        foreach ($x in 1..10)
+        {
             GivenLogEntry -Message "This is not a test message $x"
         }
 
         Start-Sleep -Seconds 10
-        foreach ($x in 1..10) {
+        foreach ($x in 1..10)
+        {
             GivenLogEntry -Message "These should be returned $x"
         }
 

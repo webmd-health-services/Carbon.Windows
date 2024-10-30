@@ -7,7 +7,9 @@ function New-CEventLog
 
     .DESCRIPTION
     The `New-CEventLog` is a drop-in replacement for the `New-EventLog` function that is available in Windows
-    PowerShell, but with support for PowerShell Core.
+    PowerShell, but with support for PowerShell.
+
+    This function will write an error if the event log source already exists.
 
     .EXAMPLE
     New-CEventLog -LogName 'TestApp' -Source 'TestLog'
@@ -20,7 +22,7 @@ function New-CEventLog
         [Parameter(Mandatory)]
         [String] $LogName,
 
-        # The source of
+        # The source of the events to be written to the log.
         [Parameter(Mandatory)]
         [String[]] $Source
     )
@@ -30,11 +32,16 @@ function New-CEventLog
 
     foreach ($s in $Source)
     {
-        if (-not [System.Diagnostics.EventLog]::SourceExists($s))
+        if ([Diagnostics.EventLog]::SourceExists($s))
+        {
+            Write-Error -Message "Event log source '$s' already exists."
+            return
+        }
+        else
         {
             if ($PSCmdlet.ShouldProcess("$s event log source '$LogName'", "install"))
             {
-                [System.Diagnostics.EventLog]::CreateEventSource($s, $LogName)
+                [Diagnostics.EventLog]::CreateEventSource($s, $LogName)
             }
         }
     }

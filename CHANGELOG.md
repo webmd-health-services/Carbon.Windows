@@ -7,8 +7,11 @@
 
 Added functions:
 
-* `Get-CEventLog`, as a drop in replacement for using `Get-EventLog` in PowerShell Core.
-* `New-CEventLog`, as a drop in replacement for using `New-EventLog` in PowerShell Core.
+* `Get-CEventLog`, as a drop in replacement for using `Get-EventLog` in PowerShell 7.
+* `Install-CEventLog`, as an idempotent version of `Get-CEventLog`.
+* `New-CEventLog`, as a drop in replacement for using `New-EventLog` in PowerShell 7.
+* `Remove-CEventLog`, as a drop in replacement for using `Remove-EventLog` in PowerShell 7.
+* `Uninstall-CEventLog`, as an idempotent version of `Remove-EventLog`
 
 ## 1.0.0
 
