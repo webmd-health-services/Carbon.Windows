@@ -82,6 +82,7 @@
         'New-CEventLog',
         'Register-CBackConnectionHostName',
         'Remove-CEventLog',
+        'Test-CEventLog',
         'Uninstall-CEventLog',
         'Unregister-CBackConnectionHostName'
     )
