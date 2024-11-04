@@ -15,7 +15,7 @@ function Remove-CEventLog
 
     Demonstrates removing the `TestApp` event log.
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         # The name of the log to remove.
         [Parameter(Mandatory)]
@@ -25,10 +25,13 @@ function Remove-CEventLog
     Set-StrictMode -Version 'Latest'
     Use-CallerPreference -Cmdlet $PSCmdlet -Session $ExecutionContext.SessionState
 
-    if ([Diagnostics.EventLog]::GetEventLogs().LogDisplayName -like $LogName)
+    if (Test-CEventLog -LogName $LogName)
     {
-        [Diagnostics.EventLog]::Delete($LogName)
+        if ($PSCmdlet.ShouldProcess("event log '$LogName'", "delete"))
+        {
+            [Diagnostics.EventLog]::Delete($LogName)
+        }
         return
     }
-    Write-Error -Message "Event log '$LogName' does not exist."
+    Write-Error -Message "Event log '${LogName}' does not exist." -ErrorAction $ErrorActionPreference
 }

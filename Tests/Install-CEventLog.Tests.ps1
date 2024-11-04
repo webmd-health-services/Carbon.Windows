@@ -19,9 +19,6 @@ BeforeAll {
 }
 
 Describe 'Install-CEventLog' {
-    BeforeEach {
-    }
-
     It 'should not throw an error when installing an event log that already exists' {
         { WhenInstallingCEventLog } | Should -Not -Throw
         { WhenInstallingCEventLog } | Should -Not -Throw

@@ -34,15 +34,12 @@ function New-CEventLog
     {
         if ([Diagnostics.EventLog]::SourceExists($s))
         {
-            Write-Error -Message "Event log source '$s' already exists."
+            Write-Error -Message "Event log source '${s}' already exists." -ErrorAction $ErrorActionPreference
             return
         }
-        else
+        if ($PSCmdlet.ShouldProcess("$s event log source '${LogName}'", "install"))
         {
-            if ($PSCmdlet.ShouldProcess("$s event log source '$LogName'", "install"))
-            {
-                [Diagnostics.EventLog]::CreateEventSource($s, $LogName)
-            }
+            [Diagnostics.EventLog]::CreateEventSource($s, $LogName)
         }
     }
 }

@@ -15,7 +15,7 @@ function Uninstall-CEventLog
 
     Demonstrates removing the `TestApp` event log.
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory)]
         [String] $LogName
@@ -24,5 +24,8 @@ function Uninstall-CEventLog
     Set-StrictMode -Version 'Latest'
     Use-CallerPreference -Cmdlet $PSCmdlet -Session $ExecutionContext.SessionState
 
-    Remove-CEventLog -LogName $LogName -ErrorAction 'SilentlyContinue'
+    if (Test-CEventLog -LogName $LogName)
+    {
+        Remove-CEventLog -LogName $LogName
+    }
 }
