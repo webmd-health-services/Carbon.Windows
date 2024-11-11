@@ -8,8 +8,6 @@ BeforeAll {
 
     & (Join-Path -Path $PSScriptRoot -ChildPath 'Initialize-Test.ps1' -Resolve)
 
-    $script:logName = 'Get-CEventLogs.Tests'
-
     function GivenEventLog
     {
         New-CEventLog -LogName $script:logName -Source 'Get-CEventLogs.Tests'
@@ -40,6 +38,7 @@ BeforeAll {
     function ThenEventLogsAreListed
     {
         $script:result | Should -BeOfType 'System.Diagnostics.EventLog'
+        $script:result | Should -Not -BeNullOrEmpty
     }
 
     function CleanUpEventLog
@@ -51,7 +50,12 @@ BeforeAll {
 Describe 'Get-CEventLog' {
     BeforeEach {
         $script:result = $null
+        $script:logName = 'Get-CEventLogs.Tests'
         Start-Sleep -Seconds 1
+    }
+
+    AfterEach {
+        Uninstall-CEventLog -LogName $script:logName
     }
 
     It 'should list event logs' {
@@ -64,7 +68,6 @@ Describe 'Get-CEventLog' {
         WhenGettingEventLogs -List
         ThenEventLogsAreListed
         $script:result.Log | Should -Contain $script:logName
-        CleanUpEventLog
     }
 
     It 'should match event logs by message' {
@@ -81,8 +84,6 @@ Describe 'Get-CEventLog' {
 
         $script:result | Should -HaveCount 5
         $script:result | ForEach-Object { $_.Message | Should -Not -Match 'This is not a test message*' }
-
-        CleanUpEventLog
     }
 
     It 'should match event logs by entry type' {
@@ -99,7 +100,6 @@ Describe 'Get-CEventLog' {
         WhenGettingEventLogs -LogName $script:logName -EntryType 'Information'
         $script:result | Should -HaveCount 4
         $script:result | ForEach-Object { $_.EntryType | Should -Be 'Information' }
-        CleanUpEventLog
     }
 
     It 'should select the most recent 5 event logs' {
@@ -123,6 +123,5 @@ Describe 'Get-CEventLog' {
         WhenGettingEventLogs -LogName $script:logName -Newest 10
         $script:result | Should -HaveCount 10
         $script:result | ForEach-Object { $_.Message | Should -Match 'These should*' }
-        CleanUpEventLog
     }
 }

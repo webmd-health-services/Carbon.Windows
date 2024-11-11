@@ -8,25 +8,15 @@ BeforeAll {
 
     & (Join-Path -Path $PSScriptRoot -ChildPath 'Initialize-Test.ps1' -Resolve)
 
-    $script:logName = 'New-CEventLog.Test'
-
     Uninstall-CEventLog -LogName $script:logName
-
-    function GivenEventSource
-    {
-        param (
-            [String[]] $Source
-        )
-
-        foreach ($s in $Source)
-        {
-            [void] $script:source.Add($s)
-        }
-    }
 
     function WhenCreatingEventLog
     {
-        New-CEventLog -LogName $script:logName -Source $script:source -ErrorAction 'SilentlyContinue'
+        param(
+            [Parameter(Mandatory)]
+            [String[]] $WithSource
+        )
+        New-CEventLog -LogName $script:logName -Source $WithSource -ErrorAction 'SilentlyContinue'
     }
 
     function ThenEventLogIsCreated
@@ -37,9 +27,13 @@ BeforeAll {
 
     function ThenEventLogHasSource
     {
-        foreach ($s in $script:source)
+        param(
+            [Parameter(Mandatory)]
+            [String[]] $WithSource
+        )
+        foreach ($source in $WithSource)
         {
-            [Diagnostics.EventLog]::SourceExists($s, $script:logName) | Should -Be $true
+            [Diagnostics.EventLog]::SourceExists($source, $script:logName) | Should -Be $true
         }
     }
 
@@ -51,29 +45,28 @@ BeforeAll {
 
 Describe 'New-CEventLog' {
     BeforeEach {
+        $script:logName = 'New-CEventLog.Test'
         $script:source = [Collections.ArrayList]::New()
         $Global:Error.Clear()
     }
 
+    AfterEach {
+        Uninstall-CEventLog -LogName $script:logName
+    }
+
     It 'should create an event log with the given source' {
-        GivenEventSource -Source 'Carbon.Windows'
-        WhenCreatingEventLog
-        ThenEventLogIsCreated
+        WhenCreatingEventLog -WithSource 'Carbon.Windows'
+        ThenEventLogIsCreated -WithSource 'Carbon.Windows'
     }
 
     It 'should create an event log with multiple sources' {
-        GivenEventSource -Source 'Carbon.Windows', 'Carbon.Windows.Tests'
-        WhenCreatingEventLog
-        ThenEventLogIsCreated
+        WhenCreatingEventLog -WithSource 'Carbon.Windows', 'Carbon.Windows.Tests'
+        ThenEventLogIsCreated -WithSource 'Carbon.Windows', 'Carbon.Windows.Tests'
     }
 
     It 'should throw an error when creating an event log with an existing source' {
         GivenEventSource -Source 'Carbon.Windows'
-        WhenCreatingEventLog
-        WhenCreatingEventLog
-    }
-
-    AfterEach {
-        Uninstall-CEventLog -LogName $script:logName
+        WhenCreatingEventLog -WithSource 'Carbon.Windows'
+        WhenCreatingEventLog -WithSource 'Carbon.Windows'
     }
 }

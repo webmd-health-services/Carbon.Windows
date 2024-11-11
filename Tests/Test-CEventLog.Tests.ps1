@@ -6,17 +6,23 @@ BeforeAll {
 
     & (Join-Path -Path $PSScriptRoot -ChildPath 'Initialize-Test.ps1' -Resolve)
 
-    $script:logName = 'Test-CEventLog.Tests'
-    Uninstall-CEventLog -LogName $script:logName
+    Uninstall-CEventLog -LogName 'Test-CEventLog.Test'
 
     function GivenEventLog
     {
-        Install-CEventLog -LogName $script:logName -Source 'Carbon.Windows'
+        param(
+            [String] $WithLogName,
+            [String] $WithSource
+        )
+        Install-CEventLog -LogName $WithLogName -Source $WithSource
     }
 
     function WhenTestingEventLog
     {
-        $script:result = Test-CEventLog -LogName $script:logName
+        param(
+            [String] $WithLogName
+        )
+        $script:result = Test-CEventLog -LogName $WithLogName
     }
 
     function ThenEventLogExists
@@ -35,18 +41,18 @@ Describe 'Test-CEventLog' {
         $script:result = $null
     }
 
+    AfterEach {
+        Uninstall-CEventLog -LogName 'Test-CEventLog.Test'
+    }
+
     It 'should return false when the event log does not exist' {
-        WhenTestingEventLog
+        WhenTestingEventLog -WithLogName 'Test-CEventLog.Test'
         ThenEventLogDoesntExist
     }
 
     It 'should return true when the event log exists' {
-        GivenEventLog
-        WhenTestingEventLog
+        GivenEventLog -WithLogName 'Test-CEventLog.Test' -WithSource 'Carbon.Windows'
+        WhenTestingEventLog -WithLogName 'Test-CEventLog.Test'
         ThenEventLogExists
-    }
-
-    AfterEach {
-        Uninstall-CEventLog -LogName $script:logName
     }
 }

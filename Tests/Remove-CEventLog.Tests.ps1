@@ -8,18 +8,21 @@ BeforeAll {
 
     & (Join-Path -Path $PSScriptRoot -ChildPath 'Initialize-Test.ps1' -Resolve)
 
-    $script:logName = 'New-CEventLog.Test'
-
-    Uninstall-CEventLog -LogName $script:logName
-
     function GivenEventLog
     {
-        Install-CEventLog -LogName $script:logName -Source 'Carbon.Windows'
+        param(
+            [String] $WithLogName,
+            [String] $WithSource
+        )
+        Install-CEventLog -LogName $WithLogName -Source $WithSource
     }
 
     function WhenRemovingEventLog
     {
-        Remove-CEventLog -LogName $script:logName -ErrorAction 'SilentlyContinue'
+        param(
+            [String] $WithLogName
+        )
+        Remove-CEventLog -LogName $WithLogName
     }
 
     function ThenError
@@ -29,24 +32,27 @@ BeforeAll {
 
     function ThenEventLogRemoved
     {
-        [Diagnostics.EventLog]::GetEventLogs().LogDisplayName | Should -Not -Contain $script:logName
+        param(
+            [String] $WithLogName
+        )
+        [Diagnostics.EventLog]::GetEventLogs().LogDisplayName | Should -Not -Contain $WithLogName
     }
 }
 
 Describe 'Remove-CEventLog' {
     BeforeEach {
         $Global:Error.Clear()
+        Uninstall-CEventLog -LogName 'Remove-CEventLog.Test'
     }
 
     It 'should remove event log' {
-        GivenEventLog
-        WhenRemovingEventLog
-        ThenEventLogRemoved
+        GivenEventLog -WithLogName 'Remove-CEventLog.Test' -WithSource 'Carbon.Windows'
+        WhenRemovingEventLog -WithLogName 'Remove-CEventLog.Test'
+        ThenEventLogRemoved -WithLogName 'Remove-CEventLog.Test'
     }
 
     It 'should error when event log does not exist' {
-        WhenRemovingEventLog
-        WhenRemovingEventLog
-        ThenError
+        { WhenRemovingEventLog -WithLogName 'Remove-CEventLog.Test' } | Should -Not -Throw
+        { WhenRemovingEventLog -WithLogName 'Remove-CEventLog.Test' } | Should -Throw '*does not exist.'
     }
 }
