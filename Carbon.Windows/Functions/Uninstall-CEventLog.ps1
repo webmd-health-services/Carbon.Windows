@@ -6,9 +6,8 @@ function Uninstall-CEventLog
     Removes an event log.
 
     .DESCRIPTION
-    The `Uninstall-CEventLog` function removes an event log from the local computer.
-
-    This function will not write an error if the event log does not already exist.
+    The Uninstall-CEventLog function removes an event log from the local computer, if it exists. If the event log
+    doesn't exist, the function does nothing.
 
     .EXAMPLE
     Uninstall-CEventLog -LogName 'TestApp'

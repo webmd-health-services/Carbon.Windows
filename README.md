@@ -29,11 +29,11 @@ Import-Module -Name '.\Carbon.Windows'
 ## Commands
 
 * `Get-CBackConnectionHostName`, for getting the list of currently configured back connection hostnames.
-* `Get-CEventLog`, as a drop in replacement for using `Get-EventLog` in PowerShell 7.
+* `Get-CEventLog`, for fetching available event logs.
 * `Install-CEventLog`, which creates an event log only if it doesn't already exist.
-* `New-CEventLog`, as a drop in replacement for using `New-EventLog` in PowerShell 7.
+* `New-CEventLog`, for creating an event log.
 * `Register-CBackConnectionHostName`, for adding a back connection hostname, if it isn't already configured.
-* `Remove-CEventLog`, as a drop in replacement for using `Remove-EventLog` in PowerShell 7.
+* `Remove-CEventLog`, for removing an event log.
 * `Test-CEventLog`, which checks if an event log exists.
-* `Uninstall-CEventLog`, which removes an event log only if it doesn't already exist
+* `Uninstall-CEventLog`, which removes an event log only if it exists.
 * `Unregister-CBackConnectionHostName`, for removing a back connection hostname, if it exists.

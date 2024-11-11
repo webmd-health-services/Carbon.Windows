@@ -6,8 +6,7 @@ function Get-CEventLog
     Gets logs from Windows Event Viewer.
 
     .DESCRIPTION
-    The `Get-CEventLog` function gets logs from the Windows Event Viewer. It is meant to be a drop-in replacement for
-    the depricated `Get-EventLog` cmdlet. Use the `List` parameter to list all of the available event logs. Use the
+    The `Get-CEventLog` function gets logs from the Windows Event Viewer. Use the `List` parameter to list all of the available event logs. Use the
     `LogName` parameter to get all of the available event log entries in a specific log.
 
     The `Newest` parameter can be used to get the latest logs. The `EntryType` parameter can be used to filter by the

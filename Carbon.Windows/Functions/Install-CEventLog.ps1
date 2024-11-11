@@ -3,7 +3,7 @@ function Install-CEventLog
 {
     <#
     .SYNOPSIS
-    Creates an event log.
+    Creates an event log if it does not exist.
 
     .DESCRIPTION
     The `Install-CEventLog` function creates an event log on the local computer. If the event log already exists, this

@@ -22,5 +22,6 @@ function Test-CEventLog
 
     Set-StrictMode -Version 'Latest'
     Use-CallerPreference -Cmdlet $PSCmdlet -Session $ExecutionContext.SessionState
+
     return [Diagnostics.EventLog]::SourceExists($LogName)
 }

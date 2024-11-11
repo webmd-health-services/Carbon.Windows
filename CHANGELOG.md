@@ -3,16 +3,16 @@
 
 ## 1.1.0
 
-> Released 04 Nov 24
+> Released 11 Nov 24
 
 Added functions:
 
-* `Get-CEventLog`, as a drop in replacement for using `Get-EventLog` in PowerShell 7.
-* `Install-CEventLog`,  which creates an event log only if it doesn't already exist.
-* `New-CEventLog`, as a drop in replacement for using `New-EventLog` in PowerShell 7.
-* `Remove-CEventLog`, as a drop in replacement for using `Remove-EventLog` in PowerShell 7.
+* `Get-CEventLog`, for fetching available event logs.
+* `Install-CEventLog`, which creates an event log only if it doesn't already exist.
+* `New-CEventLog`, for creating an event log.
+* `Remove-CEventLog`, for removing an event log.
 * `Test-CEventLog`, which checks if an event log exists.
-* `Uninstall-CEventLog`, which creates an event log only if it doesn't already exist.
+* `Uninstall-CEventLog`, which removes an event log only if it exists.
 
 ## 1.0.0
 
