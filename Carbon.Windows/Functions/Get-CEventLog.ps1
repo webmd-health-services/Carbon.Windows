@@ -6,8 +6,9 @@ function Get-CEventLog
     Gets logs from Windows Event Viewer.
 
     .DESCRIPTION
-    The `Get-CEventLog` function gets logs from the Windows Event Viewer. Use the `List` parameter to list all of the available event logs. Use the
-    `LogName` parameter to get all of the available event log entries in a specific log.
+    The `Get-CEventLog` function gets logs from the Windows Event Viewer. Use the `List` parameter to list all of the
+    available event logs. Use the `LogName` parameter to get all of the available event log entries in a specific log.
+    If the log doesn't exist, an error will be written.
 
     The `Newest` parameter can be used to get the latest logs. The `EntryType` parameter can be used to filter by the
     type of log entry. The `Message` parameter can be used to filter by the message of the log entry by matching the
@@ -67,6 +68,12 @@ function Get-CEventLog
 
     if ($LogName)
     {
+        if (-not (Test-CEventLog -LogName $LogName))
+        {
+            $msg = "Failed to get log messages from ${LogName} event log because that event log doesn't exist."
+            Write-Error -Message $msg -ErrorAction $ErrorActionPreference
+            return
+        }
         $log = [Diagnostics.EventLog]::New($LogName)
 
         $entries = $log.Entries
