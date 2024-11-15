@@ -20,14 +20,22 @@ BeforeAll {
     function WhenRemovingEventLog
     {
         param(
-            [String] $WithLogName
+            [String] $WithLogName,
+            [String] $WithSource
         )
-        Remove-CEventLog -LogName $WithLogName
-    }
+        $params = @{}
 
-    function ThenError
-    {
-        $Global:Error[0].Exception.Message | Should -Match 'does not exist.'
+        if ($WithLogName)
+        {
+            $params['LogName'] = $WithLogName
+        }
+
+        if ($WithSource)
+        {
+            $params['Source'] = $WithSource
+        }
+
+        Remove-CEventLog @params -ErrorAction 'Stop'
     }
 
     function ThenEventLogRemoved
@@ -36,6 +44,15 @@ BeforeAll {
             [String] $WithLogName
         )
         [Diagnostics.EventLog]::GetEventLogs().LogDisplayName | Should -Not -Contain $WithLogName
+    }
+
+    function ThenEventSourceRemoved
+    {
+        param(
+            [String] $WithSource
+        )
+
+        Test-CEventLog -Source $WithSource | Should -Be $false
     }
 }
 
@@ -52,7 +69,21 @@ Describe 'Remove-CEventLog' {
     }
 
     It 'should error when event log does not exist' {
+        GivenEventLog -WithLogName 'Remove-CEventLog.Test' -WithSource 'Carbon.Windows'
         { WhenRemovingEventLog -WithLogName 'Remove-CEventLog.Test' } | Should -Not -Throw
         { WhenRemovingEventLog -WithLogName 'Remove-CEventLog.Test' } | Should -Throw '*does not exist.'
+    }
+
+    It 'should only remove an event source' {
+        GivenEventLog -WithLogName 'Remove-CEventLog.Test' -WithSource 'Carbon.Windows'
+        WhenRemovingEventLog -WithSource 'Carbon.Windows'
+        ThenEventSourceRemoved -WithSource 'Carbon.Windows'
+    }
+
+    It 'should error if an event source doesn''t exist' {
+        GivenEventLog -WithLogName 'Remove-CEventLog.Test' -WithSource 'Carbon.Windows'
+        { WhenRemovingEventLog -WithSource 'Carbon.Windows' } | Should -Not -Throw
+        ThenEventSourceRemoved -WithSource 'Carbon.Windows'
+        { WhenRemovingEventLog -WithSource 'Carbon.Windows' } | Should -Throw '*does not exist.'
     }
 }

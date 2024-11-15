@@ -14,15 +14,23 @@ BeforeAll {
             [String] $WithLogName,
             [String] $WithSource
         )
+
         Install-CEventLog -LogName $WithLogName -Source $WithSource
     }
 
     function WhenTestingEventLog
     {
         param(
-            [String] $WithLogName
+            [String] $WithLogName,
+            [String] $WithSource
         )
-        $script:result = Test-CEventLog -LogName $WithLogName
+
+        if ($WithLogName)
+        {
+            $script:result = Test-CEventLog -LogName $WithLogName
+            return
+        }
+        $script:result = Test-CEventLog -Source $WithSource
     }
 
     function ThenEventLogExists
@@ -54,5 +62,23 @@ Describe 'Test-CEventLog' {
         GivenEventLog -WithLogName 'Test-CEventLog.Test' -WithSource 'Carbon.Windows'
         WhenTestingEventLog -WithLogName 'Test-CEventLog.Test'
         ThenEventLogExists
+    }
+
+    It 'should return true if the event source exists' {
+        GivenEventLog -WithLogName 'Test-CEventLog.Test' -WithSource 'Carbon.Windows'
+        WhenTestingEventLog -WithLogName 'Test-CEventLog.Test'
+        ThenEventLogExists
+        WhenTestingEventLog -WithSource 'Carbon.Windows'
+        ThenEventLogExists
+    }
+
+    It 'should return false if the event source does not exist' {
+        GivenEventLog -WithLogName 'Test-CEventLog.Test' -WithSource 'Carbon.Windows'
+        WhenTestingEventLog -WithLogName 'Test-CEventLog.Test'
+        ThenEventLogExists
+        WhenTestingEventLog -WithSource 'Carbon.Windows'
+        ThenEventLogExists
+        WhenTestingEventLog -WithSource 'Carbon.Windows.NonExistent'
+        ThenEventLogDoesntExist
     }
 }

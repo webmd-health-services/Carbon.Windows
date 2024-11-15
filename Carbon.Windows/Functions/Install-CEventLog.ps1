@@ -28,8 +28,14 @@ function Install-CEventLog
     Set-StrictMode -Version 'Latest'
     Use-CallerPreference -Cmdlet $PSCmdlet -Session $ExecutionContext.SessionState
 
-    if (-not (Test-CEventLog -LogName $LogName))
+    $logExists = Test-CEventLog -LogName $LogName
+
+    $missingSources = $Source | Where-Object { -not (Test-CEventLog -Source $_) }
+
+    if ($logExists -and -not $missingSources)
     {
-        New-CEventLog -LogName $LogName -Source $Source
+        return
     }
+
+    New-CEventLog -LogName $LogName -Source $missingSources
 }
