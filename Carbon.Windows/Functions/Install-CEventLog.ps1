@@ -20,7 +20,7 @@ function Install-CEventLog
         [Parameter(Mandatory)]
         [String] $LogName,
 
-        # The source of
+        # The source of the log to be created.
         [Parameter(Mandatory)]
         [String[]] $Source
     )

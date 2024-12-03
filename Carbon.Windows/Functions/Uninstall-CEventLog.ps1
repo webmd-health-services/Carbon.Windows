@@ -3,7 +3,7 @@ function Uninstall-CEventLog
 {
     <#
     .SYNOPSIS
-    Removes an event log.
+    Removes an event log if it exists.
 
     .DESCRIPTION
     The Uninstall-CEventLog function removes an event log from the local computer, if it exists. If the event log
