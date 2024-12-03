@@ -10,21 +10,26 @@ BeforeAll {
 
     function WhenInstallingCEventLog
     {
+        param(
+            [String] $LogName
+        )
+
+        $script:logName = $LogName
         Install-CEventLog -LogName 'Install-CEventLog.Tests' -Source 'Install-CEventLog.Tests'
     }
 }
 
 Describe 'Install-CEventLog' {
     BeforeEach {
-        $script:logName = 'Install-CEventLog.Tests'
-        Uninstall-CEventLog -LogName $script:logName
+        $script:logName = ''
     }
+
     AfterEach {
         Uninstall-CEventLog -LogName $script:logName
     }
 
     It 'should not throw an error when installing an event log that already exists' {
-        { WhenInstallingCEventLog } | Should -Not -Throw
-        { WhenInstallingCEventLog } | Should -Not -Throw
+        { WhenInstallingCEventLog -LogName 'Install-CEventLog.Tests' } | Should -Not -Throw
+        { WhenInstallingCEventLog -LogName 'Install-CEventLog.Tests' } | Should -Not -Throw
     }
 }

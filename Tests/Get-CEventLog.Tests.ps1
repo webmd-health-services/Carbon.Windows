@@ -10,16 +10,23 @@ BeforeAll {
 
     function GivenEventLog
     {
-        New-CEventLog -LogName $script:logName -Source 'Get-CEventLogs.Tests'
+        param(
+            [String] $LogName
+        )
+
+        New-CEventLog -LogName $LogName -Source 'Get-CEventLogs.Tests'
+        $script:logName = $LogName
     }
 
     function GivenLogEntry
     {
         param(
             [String] $Message,
+            [String] $LogName,
             [Diagnostics.EventLogEntryType] $EntryType = 'Error'
         )
-        [Diagnostics.EventLog]::WriteEntry($script:logName, $Message, $EntryType)
+
+        [Diagnostics.EventLog]::WriteEntry($LogName, $Message, $EntryType)
     }
 
     function WhenGettingEventLogs
@@ -32,6 +39,11 @@ BeforeAll {
             [String] $Message
         )
 
+        if ($LogName)
+        {
+            $script:logName = $LogName
+        }
+
         $script:result = Get-CEventLog @PSBoundParameters
     }
 
@@ -39,88 +51,87 @@ BeforeAll {
     {
         $script:result | Should -BeOfType 'System.Diagnostics.EventLog'
         $script:result | Should -Not -BeNullOrEmpty
-    }
-
-    function CleanUpEventLog
-    {
-        [Diagnostics.EventLog]::Delete($script:logName)
+        $script:result.Count | Should -BeGreaterThan 0
     }
 }
 
 Describe 'Get-CEventLog' {
     BeforeEach {
         $script:result = $null
-        $script:logName = 'Get-CEventLogs.Tests'
+        $script:logName = ''
         Start-Sleep -Seconds 1
     }
 
     AfterEach {
-        Uninstall-CEventLog -LogName $script:logName
+        if ($script:logName)
+        {
+            Uninstall-CEventLog -LogName $script:logName
+        }
     }
 
     It 'should list event logs' {
+        GivenEventLog -LogName 'Get-CEventLogs1.Tests'
         WhenGettingEventLogs -List
         ThenEventLogsAreListed
     }
 
     It 'should list event logs including the defaults' {
-        GivenEventLog
+        GivenEventLog -LogName 'Get-CEventLogs2.Tests'
         WhenGettingEventLogs -List
         ThenEventLogsAreListed
-        $script:result.Log | Should -Contain $script:logName
+        $script:result.Log | Should -Contain 'Get-CEventLogs2.Tests'
     }
 
     It 'should match event logs by message' {
-        GivenEventLog
+        GivenEventLog -LogName 'Get-CEventLogs3.Tests'
         foreach ($x in 1..5)
         {
-            GivenLogEntry -Message "Test message $x"
+            GivenLogEntry -Message "Test message $x" -LogName 'Get-CEventLogs3.Tests'
         }
         foreach ($x in 1..5)
         {
-            GivenLogEntry -Message "This is not a test message $x"
+            GivenLogEntry -Message "This is not a test message $x" -LogName 'Get-CEventLogs3.Tests'
         }
-        WhenGettingEventLogs -LogName $script:logName -Message 'Test*'
+        WhenGettingEventLogs -LogName 'Get-CEventLogs3.Tests' -Message 'Test*'
 
         $script:result | Should -HaveCount 5
         $script:result | ForEach-Object { $_.Message | Should -Not -Match 'This is not a test message*' }
     }
 
     It 'should match event logs by entry type' {
-        GivenEventLog
+        GivenEventLog -LogName 'Get-CEventLogs4.Tests'
         foreach ($x in 1..4)
         {
-            GivenLogEntry -Message "Test message $x" -EntryType 'Information'
+            GivenLogEntry -Message "Test message $x" -EntryType 'Information' -LogName 'Get-CEventLogs4.Tests'
         }
         foreach ($x in 1..6)
         {
-            GivenLogEntry -Message "This is not a test message $x" -EntryType 'Error'
+            GivenLogEntry -Message "This is not a test message $x" -EntryType 'Error' -LogName 'Get-CEventLogs4.Tests'
         }
 
-        WhenGettingEventLogs -LogName $script:logName -EntryType 'Information'
+        WhenGettingEventLogs -LogName 'Get-CEventLogs4.Tests' -EntryType 'Information'
         $script:result | Should -HaveCount 4
         $script:result | ForEach-Object { $_.EntryType | Should -Be 'Information' }
     }
 
     It 'should select the most recent 5 event logs' {
-        GivenEventLog
+        GivenEventLog -LogName 'Get-CEventLogs5.Tests'
         foreach ($x in 1..10)
         {
-            GivenLogEntry -Message "Test message $x"
+            GivenLogEntry -Message "Test message $x" -LogName 'Get-CEventLogs5.Tests'
         }
 
         foreach ($x in 1..10)
         {
-            GivenLogEntry -Message "This is not a test message $x"
+            GivenLogEntry -Message "This is not a test message $x" -LogName 'Get-CEventLogs5.Tests'
         }
 
-        Start-Sleep -Seconds 10
         foreach ($x in 1..10)
         {
-            GivenLogEntry -Message "These should be returned $x"
+            GivenLogEntry -Message "These should be returned $x" -LogName 'Get-CEventLogs5.Tests'
         }
 
-        WhenGettingEventLogs -LogName $script:logName -Newest 10
+        WhenGettingEventLogs -LogName 'Get-CEventLogs5.Tests' -Newest 10
         $script:result | Should -HaveCount 10
         $script:result | ForEach-Object { $_.Message | Should -Match 'These should*' }
     }

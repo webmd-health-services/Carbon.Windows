@@ -28,6 +28,7 @@ BeforeAll {
         if ($WithLogName)
         {
             $script:result = Test-CEventLog -LogName $WithLogName
+            $script:logName = $WithLogName
             return
         }
         $script:result = Test-CEventLog -Source $WithSource
@@ -47,38 +48,42 @@ BeforeAll {
 Describe 'Test-CEventLog' {
     BeforeEach {
         $script:result = $null
+        $script:logName = ''
     }
 
     AfterEach {
-        Uninstall-CEventLog -LogName 'Test-CEventLog.Test'
+        if ($script:logName)
+        {
+            Uninstall-CEventLog -LogName $script:logName
+        }
     }
 
     It 'should return false when the event log does not exist' {
-        WhenTestingEventLog -WithLogName 'Test-CEventLog.Test'
+        WhenTestingEventLog -WithLogName 'Test-CEventLog1.Test'
         ThenEventLogDoesntExist
     }
 
     It 'should return true when the event log exists' {
-        GivenEventLog -WithLogName 'Test-CEventLog.Test' -WithSource 'Carbon.Windows'
-        WhenTestingEventLog -WithLogName 'Test-CEventLog.Test'
+        GivenEventLog -WithLogName 'Test-CEventLog2.Test' -WithSource 'Carbon.Windows2'
+        WhenTestingEventLog -WithLogName 'Test-CEventLog2.Test'
         ThenEventLogExists
     }
 
     It 'should return true if the event source exists' {
-        GivenEventLog -WithLogName 'Test-CEventLog.Test' -WithSource 'Carbon.Windows'
-        WhenTestingEventLog -WithLogName 'Test-CEventLog.Test'
+        GivenEventLog -WithLogName 'Test-CEventLog3.Test' -WithSource 'Carbon.Windows3'
+        WhenTestingEventLog -WithLogName 'Test-CEventLog3.Test'
         ThenEventLogExists
-        WhenTestingEventLog -WithSource 'Carbon.Windows'
+        WhenTestingEventLog -WithSource 'Carbon.Windows3'
         ThenEventLogExists
     }
 
     It 'should return false if the event source does not exist' {
-        GivenEventLog -WithLogName 'Test-CEventLog.Test' -WithSource 'Carbon.Windows'
-        WhenTestingEventLog -WithLogName 'Test-CEventLog.Test'
+        GivenEventLog -WithLogName 'Test-CEventLog4.Test' -WithSource 'Carbon.Windows4'
+        WhenTestingEventLog -WithLogName 'Test-CEventLog4.Test'
         ThenEventLogExists
-        WhenTestingEventLog -WithSource 'Carbon.Windows'
+        WhenTestingEventLog -WithSource 'Carbon.Windows4'
         ThenEventLogExists
-        WhenTestingEventLog -WithSource 'Carbon.Windows.NonExistent'
+        WhenTestingEventLog -WithSource 'Carbon.Windows4.NonExistent'
         ThenEventLogDoesntExist
     }
 }

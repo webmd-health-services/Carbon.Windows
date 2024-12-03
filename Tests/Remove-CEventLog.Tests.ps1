@@ -14,6 +14,8 @@ BeforeAll {
             [String] $WithLogName,
             [String] $WithSource
         )
+
+        $script:logName = $WithLogName
         Install-CEventLog -LogName $WithLogName -Source $WithSource
     }
 
@@ -23,11 +25,13 @@ BeforeAll {
             [String] $WithLogName,
             [String] $WithSource
         )
+
         $params = @{}
 
         if ($WithLogName)
         {
             $params['LogName'] = $WithLogName
+            $script:logName = $WithLogName
         }
 
         if ($WithSource)
@@ -59,31 +63,38 @@ BeforeAll {
 Describe 'Remove-CEventLog' {
     BeforeEach {
         $Global:Error.Clear()
-        Uninstall-CEventLog -LogName 'Remove-CEventLog.Test'
+        $script:logName = ''
+    }
+
+    AfterEach {
+        if ($script:logName)
+        {
+            Uninstall-CEventLog -LogName $script:logName
+        }
     }
 
     It 'should remove event log' {
-        GivenEventLog -WithLogName 'Remove-CEventLog.Test' -WithSource 'Carbon.Windows'
-        WhenRemovingEventLog -WithLogName 'Remove-CEventLog.Test'
-        ThenEventLogRemoved -WithLogName 'Remove-CEventLog.Test'
+        GivenEventLog -WithLogName 'Remove-CEventLog1.Test' -WithSource 'Carbon.Windows1'
+        WhenRemovingEventLog -WithLogName 'Remove-CEventLog1.Test'
+        ThenEventLogRemoved -WithLogName 'Remove-CEventLog1.Test'
     }
 
     It 'should error when event log does not exist' {
-        GivenEventLog -WithLogName 'Remove-CEventLog.Test' -WithSource 'Carbon.Windows'
-        { WhenRemovingEventLog -WithLogName 'Remove-CEventLog.Test' } | Should -Not -Throw
-        { WhenRemovingEventLog -WithLogName 'Remove-CEventLog.Test' } | Should -Throw '*does not exist.'
+        GivenEventLog -WithLogName 'Remove-CEventLog2.Test' -WithSource 'Carbon.Windows2'
+        { WhenRemovingEventLog -WithLogName 'Remove-CEventLog2.Test' } | Should -Not -Throw
+        { WhenRemovingEventLog -WithLogName 'Remove-CEventLog2.Test' } | Should -Throw '*does not exist.'
     }
 
     It 'should only remove an event source' {
-        GivenEventLog -WithLogName 'Remove-CEventLog.Test' -WithSource 'Carbon.Windows'
-        WhenRemovingEventLog -WithSource 'Carbon.Windows'
-        ThenEventSourceRemoved -WithSource 'Carbon.Windows'
+        GivenEventLog -WithLogName 'Remove-CEventLog3.Test' -WithSource 'Carbon.Windows3'
+        WhenRemovingEventLog -WithSource 'Carbon.Windows3'
+        ThenEventSourceRemoved -WithSource 'Carbon.Windows3'
     }
 
     It 'should error if an event source doesn''t exist' {
-        GivenEventLog -WithLogName 'Remove-CEventLog.Test' -WithSource 'Carbon.Windows'
-        { WhenRemovingEventLog -WithSource 'Carbon.Windows' } | Should -Not -Throw
-        ThenEventSourceRemoved -WithSource 'Carbon.Windows'
-        { WhenRemovingEventLog -WithSource 'Carbon.Windows' } | Should -Throw '*does not exist.'
+        GivenEventLog -WithLogName 'Remove-CEventLog4.Test' -WithSource 'Carbon.Windows4'
+        { WhenRemovingEventLog -WithSource 'Carbon.Windows4' } | Should -Not -Throw
+        ThenEventSourceRemoved -WithSource 'Carbon.Windows4'
+        { WhenRemovingEventLog -WithSource 'Carbon.Windows4' } | Should -Throw '*does not exist.'
     }
 }
