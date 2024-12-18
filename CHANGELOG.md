@@ -3,7 +3,10 @@
 
 ## 1.1.1
 
-Fixed: `Register-CBackConnectionHostName` adds duplicate hostnames.
+### Fixed
+
+* `Register-CBackConnectionHostName` adds duplicate hostnames.
+* `Carbon.Windows` requires admin privileges to import.
 
 ## 1.1.0
 
