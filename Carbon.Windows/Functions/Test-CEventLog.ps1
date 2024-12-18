@@ -28,7 +28,6 @@ function Test-CEventLog
         [String] $Source
     )
 
-    #Requires -RunAsAdministrator
     Set-StrictMode -Version 'Latest'
     Use-CallerPreference -Cmdlet $PSCmdlet -Session $ExecutionContext.SessionState
 
