@@ -34,7 +34,7 @@ function Register-CBackConnectionHostName
         Set-StrictMode -Version 'Latest'
         Use-CallerPreference -Cmdlet $PSCmdlet -Session $ExecutionContext.SessionState
 
-        $curHostNames = Get-CBackConnectionHostName
+        [String[]] $curHostNames = Get-CBackConnectionHostName
         $hostnamesToAdd = [Collections.Generic.List[String]]::New()
     }
 
@@ -56,7 +56,14 @@ function Register-CBackConnectionHostName
             return
         }
 
-        $newValue = $curHostNames + $hostnamesToAdd
+        $newValue = & {
+            if ($curHostNames)
+            {
+                $curHostNames | Write-Output
+            }
+            $hostnamesToAdd | Select-Object -Unique | Write-Output
+        }
+
         Set-CRegistryKeyValue -Path $script:backConnHostNamesKeyPath `
                               -Name $script:backConnHostNamesValueName `
                               -Strings $newValue

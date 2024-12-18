@@ -1,9 +1,13 @@
 
 # Carbon.Windows Changelog
 
+## 1.1.1
+
+Fixed: `Register-CBackConnectionHostName` adds duplicate hostnames.
+
 ## 1.1.0
 
-> Released 11 Nov 24
+> Released 5 Dec 2024
 
 Added functions:
 
