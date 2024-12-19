@@ -70,4 +70,9 @@ Describe 'Register-CBackConnectionHostName' {
         WhenRegistering $script:hostname
         Should -Not -Invoke 'Set-CRegistryKeyValue' -ModuleName 'Carbon.Windows'
     }
+
+    It 'does not add duplicate hostnames' {
+        $script:hostname, $script:hostname, $script:hostname | Register-CBackConnectionHostName
+        ThenBackConnectionHostName -Is ($script:currentHostNames + $script:hostname)
+    }
 }
